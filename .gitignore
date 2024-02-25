@@ -1,0 +1,27 @@
+# IntelliJ IDEA
+.idea/
+
+# Maven
+target/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Logs
+log/
+*.log
+
+# Temporary files
+*.swp
+*~
+
+# Package Files
+*.jar
+*.war
+*.ear
+
