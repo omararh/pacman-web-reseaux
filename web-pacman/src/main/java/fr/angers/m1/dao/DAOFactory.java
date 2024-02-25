@@ -23,7 +23,7 @@ public class DAOFactory {
     // Méthode chargée de récupérer les informations de connexion à la base de
     // données, charger le driver JDBC et retourner une instance de la Factory
     public static DAOFactory getInstance() throws DAOConfigurationException {
-        String url = BaseDeDonnesConf.url;
+        String url = BaseDeDonnesConf.url + "/" + BaseDeDonnesConf.dataBaseName;
         String driver = BaseDeDonnesConf.className;
         String username = BaseDeDonnesConf.login;
         String password = BaseDeDonnesConf.password;

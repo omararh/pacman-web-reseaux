@@ -24,8 +24,12 @@ docker run -d  -it --name $MYSQL_CONTAINER_NAME \
     -p 3306:3306 \
     mysql:latest
 
-sleep 10
+
+until docker exec $MYSQL_CONTAINER_NAME mysqladmin ping &>/dev/null; do
+    sleep 5
+done
 
 docker exec -i $MYSQL_CONTAINER_NAME mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < $INIT_SCRIPT_PATH
+
 
 echo "La base de données a été initialisée avec $INIT_SCRIPT_PATH."
