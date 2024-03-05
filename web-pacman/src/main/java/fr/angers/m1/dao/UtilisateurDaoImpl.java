@@ -9,8 +9,6 @@ import fr.angers.m1.beans.Utilisateur;
 
 public class UtilisateurDaoImpl implements UtilisateurDao {
     private DAOFactory daoFactory;
-    // UPDATE `utilisateur` SET `pseudo` = 'zak', `password` = 'zak', `email` = 'zak@gmail.com' WHERE `utilisateur`.`id` = 22
-
     private static final String SQL_TROUVER = "SELECT id, email, pseudo, password, date_inscription FROM utilisateur WHERE utilisateur.pseudo = ?";
     private static final String SQL_INSERER = "INSERT INTO utilisateur (email, password, pseudo, date_inscription) VALUES (?, ?, ?, current_timestamp())";
     private static final String SQL_SUPPRIMER = "DELETE FROM utilisateur WHERE utilisateur.pseudo = ?";
