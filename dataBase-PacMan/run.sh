@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NETWORK_NAME="PacMan"
+NETWORK_NAME="Pacman"
 MYSQL_CONTAINER_NAME="mysql-container"
 MYSQL_ROOT_PASSWORD="root"
 MYSQL_DATABASE="Pacman"
@@ -8,6 +8,7 @@ MYSQL_USER="user"
 MYSQL_PASSWORD="user"
 INIT_SCRIPT_PATH="sql/init.sql"
 
+docker rm -f $MYSQL_CONTAINER_NAME
 if docker network inspect $NETWORK_NAME &>/dev/null; then
     echo "Le réseau Docker $NETWORK_NAME existe déjà. Aucune action nécessaire."
 else
