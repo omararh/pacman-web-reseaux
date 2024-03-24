@@ -1,44 +1,38 @@
 package fr.angers.m1.vue;
 
+import fr.angers.m1.modele.Maze;
+import fr.angers.m1.agent.PositionAgent;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
-import fr.angers.m1.agent.PositionAgent;
-import fr.angers.m1.modele.Maze;
-
-/**
- *  C’est un JPanel qui permet l’affichage le jeu en fonction du labyrinthe mais aussi des positions courantes des agents
- *
- * @author Olivier Goudet
- */
-
-public class PanelPacmanGame extends JPanel{
+public class PanelPacmanGame extends JPanel {
     private static final long serialVersionUID = 1L;
-    private Color wallColor=Color.BLUE;
-    private Color wallColor2=Color.BLACK;
-
-    private double sizePacman=1.1;
+    private Color wallColor = Color.BLUE;
+    private Color wallColor2 = Color.CYAN;
+    private double sizePacman = 1.1;
     private Color pacmansColor = Color.yellow;
 
-    //private Color ghostsColor = Color.white;
-    private Color ghostScarredColor=Color.BLUE;
+    private Color ghostsColor = Color.white;
+    private Color ghostScarredColor = Color.pink;
 
-    private double sizeFood=0.3;
-    private Color colorFood=Color.white;
+    private double sizeFood = 0.3;
+    private Color colorFood = Color.white;
 
-    private double sizeCapsule=0.7;
-    private Color colorCapsule=Color.red;
+    private double sizeCapsule = 0.7;
+    private Color colorCapsule = Color.red;
 
-    Maze m;
+    private Maze m;
 
     private ArrayList<PositionAgent> pacmans_pos;
     private ArrayList<PositionAgent> ghosts_pos;
 
-
     private boolean ghostsScarred;
 
+    private static int sa = 0;
+    private static int fa = 0;
 
     public PanelPacmanGame(Maze maze) {
         this.m = maze;
@@ -47,160 +41,161 @@ public class PanelPacmanGame extends JPanel{
         ghostsScarred = false;
     }
 
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
 
-        int dx=getSize().width;
-        int dy=getSize().height;
+        int dx = getSize().width;
+        int dy = getSize().height;
         g.setColor(Color.black);
-        g.fillRect(0, 0,dx,dy);
+        g.fillRect(0, 0, dx, dy);
 
-        int sx=m.getSizeX();
-        int sy=m.getSizeY();
-        double stepx=dx/(double)sx;
-        double stepy=dy/(double)sy;
-        double posx=0;
+        int sx = m.getSizeX();
+        int sy = m.getSizeY();
+        double stepx = dx / (double) sx;
+        double stepy = dy / (double) sy;
+        double posx = 0;
 
-        for(int x=0;x<sx;x++)
-        {
-            double posy=0;
-            for(int y=0;y<sy;y++)
-            {
-                if (m.isWall(x, y))
-                {
+        for (int x = 0; x < sx; x++) {
+            double posy = 0;
+            for (int y = 0; y < sy; y++) {
+                if (m.isWall(x, y)) {
                     g.setColor(wallColor2);
-                    g.fillRect((int)posx, (int)posy, (int)(stepx+1),(int)(stepy+1));
+                    g.fillRect((int) posx, (int) posy, (int) (stepx + 1),
+                            (int) (stepy + 1));
                     g.setColor(wallColor);
-                    double nsx=stepx*0.5;
-                    double nsy=stepy*0.5;
-                    double npx=(stepx-nsx)/2.0;
-                    double npy=(stepy-nsy)/2.0;
-                    g.fillRect((int)(npx+posx),(int)(npy+posy),(int)(nsx),(int)nsy);
+                    double nsx = stepx * 0.5;
+                    double nsy = stepy * 0.5;
+                    double npx = (stepx - nsx) / 2.0;
+                    double npy = (stepy - nsy) / 2.0;
+                    g.fillRect((int) (npx + posx), (int) (npy + posy),
+                            (int) (nsx), (int) nsy);
                 }
-                if (m.isFood(x, y))
-                {
+                if (m.isFood(x, y)) {
                     g.setColor(colorFood);
-                    double nsx=stepx*sizeFood;
-                    double nsy=stepy*sizeFood;
-                    double npx=(stepx-nsx)/2.0;
-                    double npy=(stepy-nsy)/2.0;
-                    g.fillOval((int)(npx+posx),(int)(npy+posy),(int)(nsx),(int)nsy);
+                    double nsx = stepx * sizeFood;
+                    double nsy = stepy * sizeFood;
+                    double npx = (stepx - nsx) / 2.0;
+                    double npy = (stepy - nsy) / 2.0;
+                    g.fillOval((int) (npx + posx), (int) (npy + posy),
+                            (int) (nsx), (int) nsy);
                 }
-                if (m.isCapsule(x, y))
-                {
+                if (m.isCapsule(x, y)) {
                     g.setColor(colorCapsule);
-                    double nsx=stepx*sizeCapsule;
-                    double nsy=stepy*sizeCapsule;
-                    double npx=(stepx-nsx)/2.0;
-                    double npy=(stepy-nsy)/2.0;
-                    g.fillOval((int)(npx+posx),(int)(npy+posy),(int)(nsx),(int)nsy);
+                    double nsx = stepx * sizeCapsule;
+                    double nsy = stepy * sizeCapsule;
+                    double npx = (stepx - nsx) / 2.0;
+                    double npy = (stepy - nsy) / 2.0;
+                    g.fillOval((int) (npx + posx), (int) (npy + posy),
+                            (int) (nsx), (int) nsy);
                 }
-                posy+=stepy;
+                posy += stepy;
             }
-            posx+=stepx;
+            posx += stepx;
         }
 
-        for(int i = 0; i < pacmans_pos.size(); i++){
+        for (int i = 0; i < pacmans_pos.size(); i++) {
             PositionAgent pos = pacmans_pos.get(i);
             drawPacmans(g, pos.getX(), pos.getY(), pos.getDir(), pacmansColor);
         }
 
-        for(int i = 0; i < ghosts_pos.size(); i++){
+        for (int i = 0; i < ghosts_pos.size(); i++) {
             PositionAgent pos = ghosts_pos.get(i);
-            if(ghostsScarred) {
+            if (ghostsScarred) {
                 drawGhosts(g, pos.getX(), pos.getY(), ghostScarredColor);
             } else {
-                switch(i % 4) {
-                    case 0:
-                        drawGhosts(g, pos.getX(), pos.getY(),Color.RED);
-                        break;
-
-                    case 1:
-                        drawGhosts(g, pos.getX(), pos.getY(),Color.ORANGE);
-                        break;
-
-                    case 2:
-                        drawGhosts(g, pos.getX(), pos.getY(),Color.PINK);
-                        break;
-
-                    default:
-                        drawGhosts(g, pos.getX(), pos.getY(),Color.GREEN);
-                        break;
-                }
+                drawGhosts(g, pos.getX(), pos.getY(), ghostsColor);
             }
         }
+    }
+
+    void drawPacmans(Graphics g, int px, int py, int pacmanDirection,
+                     Color color) {
+
+        // si pacman est en vie
+        if((px != -1) || (py != -1)){
+
+            int dx = getSize().width;
+            int dy = getSize().height;
+
+            int sx = m.getSizeX();
+            int sy = m.getSizeY();
+            double stepx = dx / (double) sx;
+            double stepy = dy / (double) sy;
+
+            double posx = px * stepx;
+            double posy = py * stepy;
+
+            g.setColor(color);
+            double nsx = stepx * sizePacman;
+            double nsy = stepy * sizePacman;
+            double npx = (stepx - nsx) / 2.0;
+            double npy = (stepy - nsy) / 2.0;
+
+
+            if (pacmanDirection == Maze.NORTH) {
+                sa = 70;
+                fa = -320;
+            }
+            if (pacmanDirection == Maze.SOUTH) {
+                sa = 250;
+                fa = -320;
+            }
+            if (pacmanDirection == Maze.EAST) {
+                sa = 340;
+                fa = -320;
+            }
+            if (pacmanDirection == Maze.WEST) {
+                sa = 160;
+                fa = -320;
+            }
+
+
+            g.fillArc((int) (npx + posx), (int) (npy + posy), (int) (nsx),
+                    (int) nsy, sa, fa);
+        }
 
     }
 
-    void drawPacmans(Graphics g, int px, int py, int pacmanDirection, Color color)
-    {
+    void drawGhosts(Graphics g, int px, int py, Color color) {
 
-        int dx = getSize().width;
-        int dy = getSize().height;
+        if((px != -1) || (py != -1)){
+            int dx = getSize().width;
+            int dy = getSize().height;
 
-        int sx = m.getSizeX();
-        int sy = m.getSizeY();
-        double stepx = dx/(double)sx;
-        double stepy = dy/(double)sy;
+            int sx = m.getSizeX();
+            int sy = m.getSizeY();
+            double stepx = dx / (double) sx;
+            double stepy = dy / (double) sy;
 
-        double posx=px*stepx;
-        double posy=py*stepy;
+            double posx = px * stepx;
+            double posy = py * stepy;
 
-        g.setColor(color);
-        double nsx=stepx*sizePacman;
-        double nsy=stepy*sizePacman;
-        double npx=(stepx-nsx)/2.0;
-        double npy=(stepy-nsy)/2.0;
-        int sa=0;
-        int fa=0;
+            g.setColor(color);
 
-        if (pacmanDirection==Maze.NORTH)
-        {
-            sa=70; fa=-320;
+            double nsx = stepx * sizePacman;
+            double nsy = stepy * sizePacman;
+            double npx = (stepx - nsx) / 2.0;
+            double npy = (stepy - nsy) / 2.0;
+
+            g.fillArc((int) (posx + npx), (int) (npy + posy), (int) (nsx),
+                    (int) (nsy), 0, 180);
+            g.fillRect((int) (posx + npx), (int) (npy + posy + nsy / 2.0 - 1),
+                    (int) (nsx), (int) (nsy * 0.666));
+            g.setColor(Color.BLACK);
+            g.fillOval((int) (posx + npx + nsx / 5.0),
+                    (int) (npy + posy + nsy / 3.0), 4, 4);
+            g.fillOval((int) (posx + npx + 3 * nsx / 5.0),
+                    (int) (npy + posy + nsy / 3.0), 4, 4);
+
+            g.setColor(Color.black);
         }
-        if (pacmanDirection==Maze.SOUTH)
-        {
-            sa=250; fa=-320;
-        }
-        if (pacmanDirection==Maze.EAST)
-        {
-            sa=340; fa=-320;
-        }
-        if (pacmanDirection==Maze.WEST)
-        {
-            sa=160; fa=-320;
-        }
-
-        g.fillArc((int)(npx+posx),(int)(npy+posy),(int)(nsx),(int)nsy,sa,fa);
-        g.setColor(Color.BLACK);
-        g.fillOval((int)(posx+npx+nsx/5.0),(int)(npy+posy+nsy/3.0),7,7);
     }
 
-    void drawGhosts(Graphics g, int px, int py, Color color){
-        int dx=getSize().width;
-        int dy=getSize().height;
+    public Maze getMaze(){
+        return m;
+    }
 
-        int sx=m.getSizeX();
-        int sy=m.getSizeY();
-        double stepx=dx/(double)sx;
-        double stepy=dy/(double)sy;
-
-        double posx=px*stepx;
-        double posy=py*stepy;
-
-        g.setColor(color);
-
-        double nsx=stepx*sizePacman;
-        double nsy=stepy*sizePacman;
-        double npx=(stepx-nsx)/2.0;
-        double npy=(stepy-nsy)/2.0;
-
-        g.fillArc((int)(posx+npx),(int)(npy+posy),(int)(nsx),(int)(nsy),0,180);
-        g.fillRect((int)(posx+npx),(int)(npy+posy+nsy/2.0-1),(int)(nsx),(int)(nsy*0.5));
-        g.setColor(Color.BLACK);
-        g.fillOval((int)(posx+npx+nsx/5.0),(int)(npy+posy+nsy/3.0),7,7);
-        g.fillOval((int)(posx+npx+3*nsx/5.0),(int)(npy+posy+nsy/3.0),7,7);
-
-        g.setColor(Color.black);
+    public void setMaze(Maze maze){
+        this.m = maze;
     }
 
     public void setGhostsScarred(boolean ghostsScarred) {
