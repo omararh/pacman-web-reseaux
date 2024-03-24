@@ -27,7 +27,7 @@ public class Authentification {
 
         // Username
         label_username = new JLabel("Username");
-        text_field_username = new JTextField("anis");
+        text_field_username = new JTextField("root");
 
         JPanel panel_username = new JPanel(new GridLayout(1,2));
         panel_username.add(label_username);
@@ -35,7 +35,7 @@ public class Authentification {
 
         // Password
         label_password = new JLabel("Password");
-        text_field_password = new JTextField("2004");
+        text_field_password = new JTextField("root");
 
         JPanel panel_password = new JPanel(new GridLayout(1,2));
         panel_password.add(label_password);
