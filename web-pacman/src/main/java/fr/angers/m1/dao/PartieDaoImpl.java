@@ -11,44 +11,16 @@ import fr.angers.m1.beans.Partie;
 public class PartieDaoImpl implements PartieDao {
 
     private DAOFactory daoFactory;
-    //SELECT pseudo, id, score, date FROM partie NATURAL JOIN partie WHERE pseudo = ?
     private static final String SQL_SELECTMESPARTIES = "SELECT pseudo, id, score, date FROM utilisateur NATURAL JOIN partie WHERE pseudo=? ORDER BY date DESC";
-    //private static final String SQL_SELECT = "SELECT pseudo , id, score, date FROM utilisateur NATURAL JOIN partie ORDER BY date DESC";
-    //private static final String SQL_SELECTTOP10 = "SELECT id, score, date FROM partie ORDER BY score DESC LIMIT 10";
     private static final String SQL_SELECTTOP10 = "SELECT pseudo , id, score, date FROM utilisateur NATURAL JOIN partie ORDER BY score DESC LIMIT 10";
-    //SELECT pseudo , score, date FROM utilisateur NATURAL JOIN partie
-    //SELECT * FROM partie ORDER BY score DESC LIMIT 5
+    private static final String SQL_DELETE_PARTI_BY_PSEUDO = "DELETE FROM partie WHERE pseudo=?";
+    private static final String SQL_UPDATE_PSEUDO =  "UPDATE partie SET pseudo=? where pseudo=?;";
 
-    // Constructeur
     public PartieDaoImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
     }
-
-
-//	@Override
-//    public ArrayList<Partie> getParties() {
-//        Connection connexion = null;
-//        PreparedStatement preparedStatement = null;
-//        ResultSet resultSet = null;
-//        ArrayList<Partie> parties = new ArrayList<Partie>();
-//
-//        try {
-//            connexion = daoFactory.getConnection();
-//            preparedStatement = DAOUtilitaire.initRequetePreparee(connexion, SQL_SELECT, true);
-//            resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                parties.add(map(resultSet));
-//            }
-//        } catch (SQLException e) {
-//            throw new DAOException(e);
-//        } finally {
-//            DAOUtilitaire.fermeturesSilencieuses(resultSet, preparedStatement, connexion);
-//        }
-//
-//        return parties;
-//    }
 
     @Override
     public ArrayList<Partie> getMesParties(String pseudo) {
@@ -59,7 +31,7 @@ public class PartieDaoImpl implements PartieDao {
 
         try {
             connexion = daoFactory.getConnection();
-            preparedStatement = DAOUtilitaire.initRequetePreparee(connexion, SQL_SELECTMESPARTIES, false, pseudo);
+            preparedStatement = DAOUtils.initRequetePreparee(connexion, SQL_SELECTMESPARTIES, false, pseudo);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 parties.add(map(resultSet));
@@ -67,12 +39,11 @@ public class PartieDaoImpl implements PartieDao {
         } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
-            DAOUtilitaire.fermeturesSilencieuses(resultSet, preparedStatement, connexion);
+            DAOUtils.fermeturesSilencieuses(resultSet, preparedStatement, connexion);
         }
 
         return parties;
     }
-
 
     @Override
     public ArrayList<Partie> getTop10Parties() throws DAOException {
@@ -84,7 +55,7 @@ public class PartieDaoImpl implements PartieDao {
 
         try {
             connexion = daoFactory.getConnection();
-            preparedStatement = DAOUtilitaire.initRequetePreparee(connexion, SQL_SELECTTOP10, true);
+            preparedStatement = DAOUtils.initRequetePreparee(connexion, SQL_SELECTTOP10, true);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 top10Parties.add(map(resultSet));
@@ -92,14 +63,60 @@ public class PartieDaoImpl implements PartieDao {
         } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
-            DAOUtilitaire.fermeturesSilencieuses(resultSet, preparedStatement, connexion);
+            DAOUtils.fermeturesSilencieuses(resultSet, preparedStatement, connexion);
         }
 
         return top10Parties;
-
     }
 
+    /**
+     * Supprime toutes les parties associées à un pseudo d'utilisateur.
+     * Cela est utilisé lors de la suppression d'un compte utilisateur pour maintenir l'intégrité de la base de données.
+     * @param pseudo Le pseudo de l'utilisateur dont les parties doivent être supprimées.
+     * @throws DAOException Si une erreur de base de données survient.
+     */
+    public void deleteByPseudo(String pseudo) throws DAOException {
+        Connection connexion = null;
+        PreparedStatement preparedStatement = null;
 
+        try {
+            connexion = daoFactory.getConnection();
+            preparedStatement = DAOUtils.initRequetePreparee(connexion, SQL_DELETE_PARTI_BY_PSEUDO, false, pseudo);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            DAOUtils.fermeturesSilencieuses(preparedStatement, connexion);
+        }
+    }
+
+    /**
+     * modifier le pseudo quand le fais dans la table user
+     * @param pseudo
+     * @param newPseudo
+     * @throws DAOException
+     */
+    public void updatePseudo(String pseudo, String newPseudo) throws DAOException {
+        Connection connexion = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connexion = daoFactory.getConnection();
+            preparedStatement = DAOUtils.initRequetePreparee(connexion, SQL_UPDATE_PSEUDO, true, newPseudo, pseudo);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            DAOUtils.fermeturesSilencieuses(preparedStatement, connexion);
+        }
+    }
+
+    /**
+     *
+     * @param resSet
+     * @return
+     * @throws SQLException
+     */
     private Partie map(ResultSet resSet) throws SQLException {
         Partie partie = new Partie();
 
@@ -110,6 +127,4 @@ public class PartieDaoImpl implements PartieDao {
 
         return partie;
     }
-
-
 }

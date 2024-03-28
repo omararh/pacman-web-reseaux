@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS utilisateur (
 
 -- Insertion de quelques lignes dans la table "utilisateur"
 INSERT INTO utilisateur (email, password, pseudo) VALUES
-    ('user1@example.com', '2004', 'amine'),
-    ('user2@example.com', 'root', 'root'),
-    ('user3@example.com', 'user', 'user');
+    ('user1@example.com', '2004', 'lolo'),
+    ('user2@example.com', 'root', 'toto'),
+    ('user3@example.com', 'user', 'coco');
 
 -- Création de la table "partie"
 CREATE TABLE IF NOT EXISTS partie (

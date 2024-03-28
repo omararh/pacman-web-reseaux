@@ -9,7 +9,7 @@ import fr.angers.m1.beans.Utilisateur;
 import fr.angers.m1.dao.DAOException;
 import fr.angers.m1.dao.UtilisateurDao;
 
-public class InscriptionForm {
+public class SigningUpValidator {
     public static final String CHAMP_PSEUDO = "pseudo";
     public static final String CHAMP_EMAIL = "email";
     public static final String CHAMP_PASSWORD = "password";
@@ -21,7 +21,7 @@ public class InscriptionForm {
     private UtilisateurDao utilisateurDao;
 
     // Constructeur
-    public InscriptionForm( UtilisateurDao utilisateurDao ) {
+    public SigningUpValidator(UtilisateurDao utilisateurDao ) {
         this.utilisateurDao = utilisateurDao;
     }
 
@@ -33,6 +33,11 @@ public class InscriptionForm {
         return erreurs;
     }
 
+    /**
+     *
+     * @param request
+     * @return Utilisateur
+     */
     public Utilisateur inscriptionUtilisateur (HttpServletRequest request) {
         String pseudo = getValeurChamp(request, CHAMP_PSEUDO);
         String email = getValeurChamp(request, CHAMP_EMAIL);
@@ -65,59 +70,85 @@ public class InscriptionForm {
     private void traiterEmail(String email, Utilisateur utilisateur) {
         try {
             validationEmail (email);
-        } catch (FormValidationException e) {
+        } catch (ValidatorException e) {
             setErreur(CHAMP_EMAIL, e.getMessage());
         }
         utilisateur.setEmail(email);
     }
 
+    /**
+     *
+     * @param pseudo
+     * @param utilisateur
+     */
     private void traiterPseudo (String pseudo, Utilisateur utilisateur) {
         try {
             validationPseudo (pseudo);
-        } catch (FormValidationException e) {
+        } catch (ValidatorException e) {
             setErreur(CHAMP_PSEUDO, e.getMessage());
         }
         utilisateur.setPseudo(pseudo);
     }
 
+    /**
+     *
+     * @param password
+     * @param conf_password
+     * @param utilisateur
+     */
     private void traiterPassword (String password, String conf_password, Utilisateur utilisateur) {
         try {
             validationPassword(password, conf_password);
-        } catch (FormValidationException e) {
+        } catch (ValidatorException e) {
             setErreur(CHAMP_PASSWORD, e.getMessage());
             setErreur(CHAMP_CONF_PASSWORD, null);
         }
         utilisateur.setPassword(password);
     }
 
-
-    private void validationEmail(String email) throws FormValidationException {
+    /**
+     *
+     * @param email
+     * @throws ValidatorException
+     */
+    private void validationEmail(String email) throws ValidatorException {
         if ( email != null ) {
             if ( !email.matches( "([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)" ) ) {
-                throw new FormValidationException( "Merci de saisir une adresse mail valide" );
+                throw new ValidatorException( "Merci de saisir une adresse mail valide" );
             }
         } else {
-            throw new FormValidationException( "Merci de saisir une adresse mail" );
+            throw new ValidatorException( "Merci de saisir une adresse mail" );
         }
 
     }
 
-    private void validationPassword(String password, String conf_password) throws FormValidationException {
+    /**
+     *
+     * @param password
+     * @param conf_password
+     * @throws ValidatorException
+     */
+    private void validationPassword(String password, String conf_password) throws ValidatorException {
         if (password != null && conf_password != null ) {
             if ( !password.equals( conf_password ) ) {
-                throw new FormValidationException("Les mots de passe entrés sont différents, merci de les saisir à nouveau" );
+                throw new ValidatorException("Les mots de passe entrés sont différents, merci de les saisir à nouveau" );
             } else if ( password.length() < 4 ) {
-                throw new FormValidationException("Les mots de passe doivent contenir au moins 4 caractères" );
+                throw new ValidatorException("Les mots de passe doivent contenir au moins 4 caractères" );
             }
         } else {
-            throw new FormValidationException("Merci de saisir et confirmer votre mot de passe" );
+            throw new ValidatorException("Merci de saisir et confirmer votre mot de passe" );
         }
 
     }
 
-    private void validationPseudo(String pseudo) throws FormValidationException {
+    /**
+     *
+     * @param pseudo
+     * @throws ValidatorException
+     */
+    private void validationPseudo(String pseudo) throws ValidatorException {
         if (pseudo != null && pseudo.length() < 3) {
-            throw new FormValidationException("Le nom d'utilisateur doit contenir au moins 3 caractères" );
+            throw new ValidatorException("Le nom d'utilisateur doit contenir au moins 3 caractères" );
         }
 
     }
@@ -127,6 +158,12 @@ public class InscriptionForm {
         erreurs.put(champ, message);
     }
 
+    /**
+     *
+     * @param request
+     * @param nomChamp
+     * @return
+     */
     private static String getValeurChamp (HttpServletRequest request, String nomChamp) {
         //recuperer ce que l'utilisateur a saisi dans le champ
         String valeur = request.getParameter(nomChamp);

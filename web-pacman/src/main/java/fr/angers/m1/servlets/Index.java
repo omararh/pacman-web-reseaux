@@ -24,7 +24,6 @@ public class Index extends HttpServlet {
     private PartieDao partieDao ;
 
     public void init() throws ServletException {
-        // récupération d'une instance de notre dao partie
         this.partieDao = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY)).getPartieDao();
     }
 

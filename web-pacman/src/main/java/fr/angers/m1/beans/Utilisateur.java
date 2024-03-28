@@ -15,7 +15,6 @@ public class Utilisateur {
 
     }
 
-    /* GUETTER & SETTER */
 
     public Long getId() {
         return id;

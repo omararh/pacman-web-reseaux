@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import fr.angers.m1.beans.Utilisateur;
 import fr.angers.m1.dao.UtilisateurDao;
-import fr.angers.m1.forms.ConnexionForm;
+import fr.angers.m1.forms.CredentialsValidator;
 import fr.angers.m1.dao.DAOFactory;
 
 @WebServlet("/Connexion")
@@ -26,7 +26,6 @@ public class Connexion extends HttpServlet {
     private UtilisateurDao utilisateurDao ;
 
     public void init() throws ServletException {
-        // récupération d'une instance de notre dao utilisateur
         this.utilisateurDao = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY)).getUtilisateurDao();
     }
 
@@ -34,8 +33,8 @@ public class Connexion extends HttpServlet {
         super();
     }
 
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Récupération de la session depuis la requête
         HttpSession session = request.getSession();
 
         if ( session.getAttribute( ATT_SESSION_UTILISATEUR ) == null ) {
@@ -47,21 +46,16 @@ public class Connexion extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // Préparation de l'objet formulaire
-        ConnexionForm form = new ConnexionForm(utilisateurDao);
+        CredentialsValidator credentialsValidator = new CredentialsValidator(utilisateurDao);
 
-        // Traitement de la requête et récupération du bean en résultant
-        Utilisateur utilisateur = form.connexionUtilisateur(request);
+        Utilisateur utilisateur = credentialsValidator.connexionUtilisateur(request);
 
         HttpSession session = request.getSession();
 
-        // Stockage du formulaire et du bean dans l'objet request
-        request.setAttribute(ATT_FORM, form );
+        request.setAttribute(ATT_FORM, credentialsValidator );
         request.setAttribute(ATT_UTILISATEUR, utilisateur);
 
-        // Si aucune erreur de validation n'a eu lieu, alors ajout du bean
-        // Utilisateur à la session, sinon suppression du bean de la session.
-        if (form.getErreurs().isEmpty()) {
+        if (credentialsValidator.getErreurs().isEmpty()) {
             session.setAttribute(ATT_SESSION_UTILISATEUR, utilisateur);
             response.sendRedirect("/web-pacman/accueil");
         } else {

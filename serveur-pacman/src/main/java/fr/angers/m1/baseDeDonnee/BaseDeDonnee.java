@@ -13,7 +13,6 @@ public class BaseDeDonnee {
     private static Connection connection = null;
     private static Statement statement = null;
     private static ResultSet resultatRequette = null;
-
     // methode connexion a la bdd
     public static void connexion () throws IOException, ClassNotFoundException, SQLException {
 
@@ -38,7 +37,6 @@ public class BaseDeDonnee {
 
             statement = connection.createStatement();
             resultatRequette = statement.executeQuery(requette);
-
             //On va vérifier si dans le resultatRequette il existe un pseudo correspondant à username
             if(!resultatRequette.next()) {
                 //System.out.println("Ce compte n'existe pas");
@@ -93,7 +91,7 @@ public class BaseDeDonnee {
             //Connexion à la BDD
             BaseDeDonnee.connexion();
 
-            String requette = "INSERT INTO partie (id,score,date) VALUES ('" + id + "','" + score + "',NOW());";
+            String requette = "INSERT INTO partie (id, score, date, pseudo) VALUES ('" + id + "','" + score + "',NOW(), '" + getPseudoById(id) + "');";
 
             statement = connection.createStatement();
             statement.executeUpdate(requette);
@@ -128,5 +126,20 @@ public class BaseDeDonnee {
         }
     }
 
+    private static String getPseudoById(int userId) throws SQLException, IOException, ClassNotFoundException {
+        String pseudo = null;
+        // Connexion à la BDD
+        BaseDeDonnee.connexion();
 
+        String requette = "SELECT pseudo FROM utilisateur WHERE id = " + userId + ";";
+
+        statement = connection.createStatement();
+        resultatRequette = statement.executeQuery(requette);
+
+        // Si le résultat contient une ligne
+        if (resultatRequette.next()) {
+            pseudo = resultatRequette.getString("pseudo");
+        }
+        return pseudo;
+    }
 }

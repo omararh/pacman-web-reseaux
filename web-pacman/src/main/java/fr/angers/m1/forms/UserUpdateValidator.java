@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import fr.angers.m1.beans.Utilisateur;
 import fr.angers.m1.dao.UtilisateurDao;
 
-public class ModificationForm {
+public class UserUpdateValidator {
     private static final String CHAMP_NEW_PSEUDO  = "new_pseudo";
     public static final String CHAMP_NEW_EMAIL = "new_email";
     public static final String CHAMP_NEW_PASSWORD = "new_password";
@@ -22,7 +22,7 @@ public class ModificationForm {
     private UtilisateurDao utilisateurDao;
 
     // Constructeur
-    public ModificationForm(UtilisateurDao utilisateurDao) {
+    public UserUpdateValidator(UtilisateurDao utilisateurDao) {
         this.utilisateurDao = utilisateurDao;
     }
 
@@ -34,8 +34,14 @@ public class ModificationForm {
         return erreurs;
     }
 
-
-    public Utilisateur modificationCompte(Utilisateur utilisateur,HttpServletRequest request) throws FormValidationException {
+    /**
+     *
+     * @param utilisateur
+     * @param request
+     * @return Utilisateur
+     * @throws ValidatorException
+     */
+    public Utilisateur modificationCompte(Utilisateur utilisateur,HttpServletRequest request) throws ValidatorException {
         String new_pseudo = getValeurChamp(request, CHAMP_NEW_PSEUDO);
         String new_email = getValeurChamp(request, CHAMP_NEW_EMAIL);
         String new_password = getValeurChamp(request, CHAMP_NEW_PASSWORD);
@@ -51,7 +57,7 @@ public class ModificationForm {
             try {
                 validationNewPseudo(new_pseudo);
             }
-            catch(FormValidationException e) {
+            catch(ValidatorException e) {
                 erreurs.put(CHAMP_NEW_PSEUDO, e.getMessage());
             }
             newUtilisateur.setPseudo(new_pseudo);
@@ -60,7 +66,7 @@ public class ModificationForm {
         if(new_email != null && new_email != "") {
             try {
                 validationNewEmail(new_email);
-            } catch (FormValidationException e) {
+            } catch (ValidatorException e) {
                 erreurs.put(CHAMP_NEW_EMAIL, e.getMessage());
             }
             newUtilisateur.setEmail(new_email);
@@ -69,13 +75,13 @@ public class ModificationForm {
         if(new_password != null && new_conf_password != null) {
             try {
                 validation_new_password(new_password);
-            } catch (FormValidationException e) {
+            } catch (ValidatorException e) {
                 erreurs.put(CHAMP_NEW_PASSWORD, e.getMessage());
             }
 
             try {
                 validation_conf_new_password(new_conf_password, new_password);
-            } catch (FormValidationException e) {
+            } catch (ValidatorException e) {
                 erreurs.put(CHAMP_CONF_NEW_PASSWORD, e.getMessage());
             }
             newUtilisateur.setPassword(new_password);
@@ -92,39 +98,65 @@ public class ModificationForm {
 
     }
 
-    private void validationNewEmail(String new_email) throws FormValidationException {
+    /**
+     *
+     * @param new_email
+     * @throws ValidatorException
+     */
+    private void validationNewEmail(String new_email) throws ValidatorException {
         if (new_email != null ) {
             if (!new_email.matches( "([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)")) {
-                throw new FormValidationException( "Merci de saisir une adresse mail valide");
+                throw new ValidatorException( "Merci de saisir une adresse mail valide");
             } else if (utilisateurDao.verifier(SQL_SELECT_PAR_EMAIL, new_email) != null) {
-                throw new FormValidationException("Cette adresse mail est déjà utilisée, merci d'en choisir une autre");
+                throw new ValidatorException("Cette adresse mail est déjà utilisée, merci d'en choisir une autre");
             }
         } else {
-            throw new FormValidationException("Merci de saisir une adresse mail");
+            throw new ValidatorException("Merci de saisir une adresse mail");
         }
     }
 
-    private void validation_conf_new_password(String new_conf_password, String new_password) throws FormValidationException {
+    /**
+     *
+     * @param new_conf_password
+     * @param new_password
+     * @throws ValidatorException
+     */
+    private void validation_conf_new_password(String new_conf_password, String new_password) throws ValidatorException {
         if (!new_conf_password.contentEquals(new_password)  ) {
-            throw new FormValidationException("La confirmation doit être identique au nouveau mot de passe");
+            throw new ValidatorException("La confirmation doit être identique au nouveau mot de passe");
         }
     }
 
-    private void validation_new_password(String new_password) throws FormValidationException {
+    /**
+     *
+     * @param new_password
+     * @throws ValidatorException
+     */
+    private void validation_new_password(String new_password) throws ValidatorException {
         if (new_password.length() < 4 ) {
-            throw new FormValidationException("Le nouveau mot de passe doit contenir au moins 4 caractères");
+            throw new ValidatorException("Le nouveau mot de passe doit contenir au moins 4 caractères");
         }
     }
 
-    private void validationNewPseudo(String new_pseudo) throws FormValidationException {
+    /**
+     *
+     * @param new_pseudo
+     * @throws ValidatorException
+     */
+    private void validationNewPseudo(String new_pseudo) throws ValidatorException {
         if (new_pseudo.length() < 3 ) {
-            throw new FormValidationException("Le nouveau nom d'utilisateur doit contenir au moins 3 caractères");
+            throw new ValidatorException("Le nouveau nom d'utilisateur doit contenir au moins 3 caractères");
         }else if (utilisateurDao.verifier(SQL_SELECT_PAR_PSEUDO, new_pseudo) != null) {
-            throw new FormValidationException("Ce pseudo est déjà utilisé, merci d'en choisir un autre");
+            throw new ValidatorException("Ce pseudo est déjà utilisé, merci d'en choisir un autre");
         }
     }
 
-
+    /**
+     *
+     * @param request
+     * @param nomChamp
+     * @return
+     */
     private static String getValeurChamp (HttpServletRequest request, String nomChamp) {
         String valeur = request.getParameter(nomChamp);
         if (valeur == null || valeur.trim().length() == 0) {

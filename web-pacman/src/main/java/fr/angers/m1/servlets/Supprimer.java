@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import fr.angers.m1.beans.Utilisateur;
 import fr.angers.m1.dao.DAOFactory;
+import fr.angers.m1.dao.PartieDao;
 import fr.angers.m1.dao.UtilisateurDao;
 
 @WebServlet("/Supprimer")
@@ -20,11 +21,12 @@ public class Supprimer extends HttpServlet {
     private static final String ATT_SESSION_UTILISATEUR = "sessionUtilisateur";
     private static final String VUE = "/WEB-INF/supprimer.jsp";
 
-    private UtilisateurDao utilisateurDao ;
+    private UtilisateurDao utilisateurDao;
+    private PartieDao partieDao;
 
     public void init() throws ServletException {
-        // récupération d'une instance de notre dao partie
         this.utilisateurDao = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY)).getUtilisateurDao();
+        this.partieDao = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY)).getPartieDao();
     }
 
     public Supprimer() {
@@ -36,11 +38,11 @@ public class Supprimer extends HttpServlet {
 
         if (session.getAttribute(ATT_SESSION_UTILISATEUR) == null) {
             response.sendRedirect("/web-pacman/connexion");
-
         } else {
-            String pseu = ((Utilisateur) session.getAttribute(ATT_SESSION_UTILISATEUR)).getPseudo();
+            String pseudo = ((Utilisateur) session.getAttribute(ATT_SESSION_UTILISATEUR)).getPseudo();
 
-            utilisateurDao.supprimerCompte(pseu);
+            partieDao.deleteByPseudo(pseudo);
+            utilisateurDao.supprimerCompte(pseudo);
             session.invalidate();
             this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
         }
@@ -50,5 +52,4 @@ public class Supprimer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
-
 }

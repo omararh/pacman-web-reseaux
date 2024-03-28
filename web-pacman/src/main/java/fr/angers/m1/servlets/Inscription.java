@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import fr.angers.m1.beans.Utilisateur;
 import fr.angers.m1.dao.DAOFactory;
 import fr.angers.m1.dao.UtilisateurDao;
-import fr.angers.m1.forms.InscriptionForm;
+import fr.angers.m1.forms.SigningUpValidator;
 
 @WebServlet("/Inscription")
 public class Inscription extends HttpServlet {
@@ -20,7 +20,6 @@ public class Inscription extends HttpServlet {
     public static final String ATT_SESSION_UTILISATEUR = "sessionUtilisateur";
     public static final String ATT_FORM = "form";
     private static final String VUE = "/WEB-INF/inscription.jsp";
-    public static final String CONF_DAO_FACTORY = "daofactory";
 
     private UtilisateurDao utilisateurDao;
 
@@ -34,26 +33,21 @@ public class Inscription extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Récupération de la session depuis la requête
         HttpSession session = request.getSession();
 
         if (session.getAttribute( ATT_SESSION_UTILISATEUR ) == null) {
             this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
         } else {
-            // Affichage de la page restreinte
             response.sendRedirect("/web-pacman/accueil");
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        /* Préparation de l'objet formulaire */
-        InscriptionForm form = new InscriptionForm(utilisateurDao);
+        SigningUpValidator signingUpValidator = new SigningUpValidator(utilisateurDao);
 
-        /* Appel au traitement et à la validation de la requête, et récupération du bean en résultant */
-        Utilisateur utilisateur = form.inscriptionUtilisateur(request);
+        Utilisateur utilisateur = signingUpValidator.inscriptionUtilisateur(request);
 
-        /* Stockage du formulaire et du bean dans l'objet request */
-        request.setAttribute(ATT_FORM, form);
+        request.setAttribute(ATT_FORM, signingUpValidator);
         request.setAttribute(ATT_UTILISATEUR, utilisateur);
 
         this.getServletContext().getRequestDispatcher(VUE).forward(request, response);

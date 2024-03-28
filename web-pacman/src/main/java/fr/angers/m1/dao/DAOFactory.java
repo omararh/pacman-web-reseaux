@@ -2,12 +2,10 @@ package fr.angers.m1.dao;
 
 import fr.angers.m1.constants.BaseDeDonnesConf;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
+
 
 public class DAOFactory {
     private String url;
@@ -20,8 +18,10 @@ public class DAOFactory {
         this.password = password;
     }
 
-    // Méthode chargée de récupérer les informations de connexion à la base de
-    // données, charger le driver JDBC et retourner une instance de la Factory
+
+    /**
+     * @throws DAOConfigurationException
+     */
     public static DAOFactory getInstance() throws DAOConfigurationException {
         String url = BaseDeDonnesConf.url + "/" + BaseDeDonnesConf.dataBaseName;
         String driver = BaseDeDonnesConf.className;
@@ -51,5 +51,4 @@ public class DAOFactory {
     public PartieDao getPartieDao() {
         return new PartieDaoImpl(this);
     }
-
 }

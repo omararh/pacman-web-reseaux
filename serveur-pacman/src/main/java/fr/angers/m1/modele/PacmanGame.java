@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import fr.angers.m1.agent.*;
 import fr.angers.m1.baseDeDonnee.BaseDeDonnee;
-import fr.angers.m1.comportement.*;;
+import fr.angers.m1.comportement.*;
 import fr.angers.m1.serveur.ServeurEnvoi;
 
 public class PacmanGame extends Game {

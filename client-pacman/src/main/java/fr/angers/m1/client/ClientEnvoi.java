@@ -7,7 +7,6 @@ import java.net.Socket;
 public class ClientEnvoi extends Thread {
     private Socket clientSocket;
     private static String message="", messageAncien="";
-    //Scanner scanner = new Scanner(System.in);
 
     public ClientEnvoi(Socket clientSocket) {
         this.clientSocket = clientSocket;

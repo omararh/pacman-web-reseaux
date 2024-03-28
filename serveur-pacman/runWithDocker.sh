@@ -32,5 +32,5 @@ if [ ! "$(docker ps -q -f name=$APP_CONTAINER)" ]; then
         docker rm $APP_CONTAINER
     fi
     # Démarrer le conteneur de votre application avec la liaison au conteneur MySQL
-    docker run --name $APP_CONTAINER -p 5000:5000 --link $MYSQL_CONTAINER --network $DOCKER_NETWORK_NAME $APP_IMAGE
+    docker run --name $APP_CONTAINER -p 5001:5000 --link $MYSQL_CONTAINER --network $DOCKER_NETWORK_NAME $APP_IMAGE
 fi

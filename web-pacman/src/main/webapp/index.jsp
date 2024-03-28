@@ -6,9 +6,43 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-		  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+		<style>
+			body {
+				padding-top: 70px;
+			}
+			.navbar-default {
+				background-color: #f8f8f8;
+				border-color: #e7e7e7;
+			}
+			.navbar-default .navbar-brand {
+				color: #007bff;
+			}
+			.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+				color: #0056b3;
+			}
+			.navbar-default .navbar-nav > li > a {
+				color: #555;
+			}
+			.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+				color: #333;
+			}
+			table.table {
+				border-collapse: collapse;
+			}
+			table.table th, table.table td {
+				border: 1px solid #ddd;
+				padding: 8px;
+			}
+			table.table th {
+				text-align: left;
+				background-color: #4CAF50;
+				color: white;
+			}
+		</style>
 
 		<title> Pacman </title>
 	</head>
@@ -17,16 +51,11 @@
 
 <div class="container">
 
-	<nav class="navbar navbar-inverse">
+	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="/web-pacman/index">Pacman</a>
 			</div>
-
-			<ul class="nav navbar-nav">
-				<li><a href="/web-pacman/index"><span class="glyphicon glyphicon-home"></span> Home </a></li>
-				<li><a href="/web-pacman/telechargement"><span class="glyphicon glyphicon-download-alt"></span> Téléchargement </a></li>
-			</ul>
 
 			<c:if test="${empty sessionScope.sessionUtilisateur}">
 

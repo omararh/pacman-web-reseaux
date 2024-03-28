@@ -11,9 +11,11 @@ import javax.servlet.http.HttpSession;
 
 import fr.angers.m1.beans.Utilisateur;
 import fr.angers.m1.dao.DAOFactory;
+import fr.angers.m1.dao.PartieDao;
 import fr.angers.m1.dao.UtilisateurDao;
-import fr.angers.m1.forms.FormValidationException;
-import fr.angers.m1.forms.ModificationForm;
+import fr.angers.m1.forms.UserUpdateValidator;
+import fr.angers.m1.forms.ValidatorException;
+
 
 @WebServlet("/Modification")
 public class Modification extends HttpServlet {
@@ -21,13 +23,14 @@ public class Modification extends HttpServlet {
     private static final String ATT_FORM = "form";
     private static final String VUE = "/WEB-INF/modification.jsp";
     private static final String ATT_SESSION_UTILISATEUR = "sessionUtilisateur";
-    public static final String CONF_DAO_FACTORY = "daofactory";
 
     private UtilisateurDao utilisateurDao;
+    private PartieDao partieDao;
 
-    public void init() throws ServletException {
+    public void init() {
         DAOFactory daoFactory = DAOFactory.getInstance();
         this.utilisateurDao = daoFactory.getUtilisateurDao();
+        this.partieDao = daoFactory.getPartieDao();
     }
 
     public Modification() {
@@ -43,14 +46,19 @@ public class Modification extends HttpServlet {
             this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
         }
     }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        ModificationForm form = new ModificationForm(this.utilisateurDao);
+        UserUpdateValidator form = new UserUpdateValidator(this.utilisateurDao);
+        Utilisateur utilisateur = (Utilisateur) session.getAttribute(ATT_SESSION_UTILISATEUR);
         Utilisateur newUtilisateur = null;
         try {
-            newUtilisateur = form.modificationCompte((Utilisateur) session.getAttribute(ATT_SESSION_UTILISATEUR), request);
-        } catch (FormValidationException e) {
+            newUtilisateur = form.modificationCompte(utilisateur, request);
+            if(!utilisateur.getPseudo().equals(newUtilisateur.getPseudo())) {
+                this.partieDao.updatePseudo(utilisateur.getPseudo(), newUtilisateur.getPseudo());
+            }
+        } catch (ValidatorException e) {
             e.printStackTrace();
         }
         session.setAttribute( ATT_SESSION_UTILISATEUR, newUtilisateur );

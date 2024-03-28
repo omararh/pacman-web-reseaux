@@ -20,8 +20,6 @@ public class Partie {
 
     }
 
-    /* GUETTER & SETTER */
-
     public Long getId() {
         return id;
     }

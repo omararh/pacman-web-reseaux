@@ -1,7 +1,6 @@
 package fr.angers.m1.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -27,7 +26,6 @@ public class Accueil extends HttpServlet {
     private PartieDao partieDao ;
 
     public void init() throws ServletException {
-        // récupération d'une instance de notre dao partie
         this.partieDao = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY)).getPartieDao();
     }
 
@@ -35,25 +33,33 @@ public class Accueil extends HttpServlet {
         super();
     }
 
+    /**
+     *
+     * @param request   an {@link HttpServletRequest} object that
+     *                  contains the request the client has made
+     *                  of the servlet
+     *
+     * @param response  an {@link HttpServletResponse} object that
+     *                  contains the response the servlet sends
+     *                  to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // Récupération de la session depuis la requête
         HttpSession session = request.getSession();
 
-        // Si l'objet utilisateur n'existe pas dans la session en cours, alors
-        // l'utilisateur n'est pas connecté.
         if (session.getAttribute(ATT_SESSION_UTILISATEUR) == null) {
             response.sendRedirect("/web-pacman/connexion");
-            // Redirection vers la page publique
 
         } else {
-            String pseu = ((Utilisateur) session.getAttribute(ATT_SESSION_UTILISATEUR)).getPseudo();
-            System.out.println("session : "+pseu);
+            String pseudo = ((Utilisateur) session.getAttribute(ATT_SESSION_UTILISATEUR)).getPseudo();
+            System.out.println("session for the user : " + pseudo);
 
-            List<Partie> parties = partieDao.getMesParties(pseu);
+            List<Partie> parties = partieDao.getMesParties(pseudo);
 
             request.setAttribute(ATT_PARTIES, parties);
-            // Affichage de la page restreinte
             this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
         }
     }

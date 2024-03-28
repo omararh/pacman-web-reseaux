@@ -14,4 +14,6 @@ public interface PartieDao  {
 
     ArrayList<Partie> getTop10Parties() throws DAOException;
     ArrayList<Partie> getMesParties(String pseudo) throws DAOException;
+    void deleteByPseudo(String pseudo) throws DAOException;
+    void updatePseudo(String pseudo, String newPseudo) throws DAOException;
 }

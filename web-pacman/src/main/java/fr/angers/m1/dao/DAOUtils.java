@@ -6,11 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DAOUtilitaire {
+/**
+ * permet de simplifier l'initialisation des requêtes préparées et assure la gestion sécurisée
+ * des fermetures de Connection, Statement, et ResultSet dans les opérations JDBC.
+ */
+public class DAOUtils {
 
-    // Constructeur caché par défaut (car c'est une classe finale utilitaire,
-    // contenant uniquement des méthodes appelées de manière statique)
-    private DAOUtilitaire() {
+    private DAOUtils() {
 
     }
 

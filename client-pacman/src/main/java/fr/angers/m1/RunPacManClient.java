@@ -1,7 +1,5 @@
 package fr.angers.m1;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import fr.angers.m1.client.ClientEnvoi;
 import fr.angers.m1.client.ClientReception;
 import fr.angers.m1.configuration.PacManConf;
