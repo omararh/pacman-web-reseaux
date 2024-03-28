@@ -11,7 +11,7 @@ import fr.angers.m1.beans.Partie;
 public class PartieDaoImpl implements PartieDao {
 
     private DAOFactory daoFactory;
-    private static final String SQL_SELECTMESPARTIES = "SELECT pseudo, id, score, date FROM utilisateur NATURAL JOIN partie WHERE pseudo=? ORDER BY date DESC";
+    private static final String SQL_GET_PARTIES = "SELECT * from partie where pseudo=? ORDER BY date DESC";
     private static final String SQL_SELECTTOP10 = "SELECT pseudo , id, score, date FROM utilisateur NATURAL JOIN partie ORDER BY score DESC LIMIT 10";
     private static final String SQL_DELETE_PARTI_BY_PSEUDO = "DELETE FROM partie WHERE pseudo=?";
     private static final String SQL_UPDATE_PSEUDO =  "UPDATE partie SET pseudo=? where pseudo=?;";
@@ -31,7 +31,7 @@ public class PartieDaoImpl implements PartieDao {
 
         try {
             connexion = daoFactory.getConnection();
-            preparedStatement = DAOUtils.initRequetePreparee(connexion, SQL_SELECTMESPARTIES, false, pseudo);
+            preparedStatement = DAOUtils.initRequetePreparee(connexion, SQL_GET_PARTIES, false, pseudo);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 parties.add(map(resultSet));

@@ -91,7 +91,7 @@ public class BaseDeDonnee {
             //Connexion à la BDD
             BaseDeDonnee.connexion();
 
-            String requette = "INSERT INTO partie (id, score, date, pseudo) VALUES ('" + id + "','" + score + "',NOW(), '" + getPseudoById(id) + "');";
+            String requette = "INSERT INTO partie (score, pseudo) VALUES ('" + score + "', '" + getPseudoById(id) + "');";
 
             statement = connection.createStatement();
             statement.executeUpdate(requette);
